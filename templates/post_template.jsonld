@@ -1,0 +1,39 @@
+		{
+				"@id": "docbase:{{ review_.id }}",
+				"@type": [
+						"sioc:Post",
+						"marl:aggregatedOpinion"
+					],
+				"sioc:content": "{{ review_.content }}",
+				"marl:describesObject": "Hotel",
+				"dc:title": "{{ review_.title }}",
+				"dc:creator": "{{ review_.creator }}",
+				"dc:date": "{{ review_.date }}"
+		},
+		{% for element in opinions_ %}
+		{
+			"@id": "docbase:{{ element.id }}",
+			"@type": "marl:opinion",
+			"marl:extractedFrom": "docbase:{{ review_.id }}",
+			"marl:hasPolarity": "marl:{{   element.polarity }}",
+		  	{% if (element.feature.beginIndex != None) and (element.feature.endIndex != None) %}
+		  	"marl:describesFeature": {
+				"@id": "docbase:{{ element.id }}_feature",
+				"@type": "nifString",
+				"nifBeginIndex": {% if element.feature.beginIndex != None %}{{element.feature.beginIndex}}{% else %}"None"{% endif %},
+				"nifEndIndex":  {% if element.feature.endIndex != None %}{{element.feature.endIndex}}{% else %}"None"{% endif %}
+
+			},
+			{% endif %}
+			{# {% if (element.text.beginIndex != None) and (element.text.endIndex != None) %} #}
+			"marl:opinionText": {
+				"@id": "docbase:{{ element.id }}_text",
+				"@type": "nifString",
+				"nifBeginIndex":  {%- if element.text.beginIndex != None %}{{   element.text.beginIndex }}{% else %}"None"{% endif %},
+				"nifEndIndex": {%- if element.text.endIndex != None %}{{   element.text.endIndex }}{% else %}"None"{% endif %}
+
+            }
+			{# {% endif %} #}
+		}{% if  (not noComma) or (not loop.last) %},{% endif %}
+
+		{% endfor %}

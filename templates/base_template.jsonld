@@ -1,0 +1,15 @@
+{
+	"@context": {
+		"docbase": "http://gsi.dit.upm.es/documents/reviews/hotel/#",
+		"marl": "http://gsi.dit.upm.es/ontologies/marl/#",
+		"nifString": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/nif-core.html#d4e436",
+		"nifBeginIndex": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/nif-core.html#d4e436",
+		"nifEndIndex": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/nif-core.html#d4e582",
+		"dc": "http://purl.org/dc/elements/1.1/",
+		"sioc": "https://www.w3.org/Submission/sioc-spec/#"
+
+	},
+
+	"@graph": [
+
+			
