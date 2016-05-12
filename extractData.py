@@ -7,7 +7,6 @@ import shutil
 import os
 from subprocess import call
 import sys
-import glob
 
 
 review = {'id': None, 'title': None, 'creator': None, 'date': None, 'content': None}
@@ -25,15 +24,18 @@ def saveReviewData(archivoXMI):
 	review['creator'] = root.find("{http:///de/aitools/ie/uima/type/arguana.ecore}RatingData").get('author')
 	review['date'] = root.find("{http:///de/aitools/ie/uima/type/arguana.ecore}RatingData").get('date')
 	try:
-		review['content'] = root.find("{http:///uima/cas.ecore}Sofa").get("sofaString").split('\n\n')[1]
+		content = root.find("{http:///uima/cas.ecore}Sofa").get("sofaString").split('\n\n')[1]
+		content2 = content.replace("\"","\'")
+		review['content'] = content2
 	except:
 		print("REVIEW SIN TÍTULO 1/2") #Comprobar si da error y cuantas veces
 		review['content'] = root.find("{http:///uima/cas.ecore}Sofa").get("sofaString")
-	try:
-		review['title'] = root.find("{http:///uima/cas.ecore}Sofa").get("sofaString").split('\n\n')[0]
-	except:
 		review['title'] = ""
-		print("REVIEW SIN TÍTULO 2/2")
+		return
+	title = (root.find("{http:///uima/cas.ecore}Sofa").get("sofaString").split('\n\n')[0]).replace("\"","\'")
+	review['title'] = title
+
+
 
 def saveOpinionsData(archivoXMI):
 	opinions = []
@@ -96,13 +98,13 @@ elif len(sys.argv) ==3:
 	command = sys.argv[1]
 	parameter = sys.argv[2]
 else:
-	print("Usage: \n createJson.py <command> [parameter] \n\n General Options: \n \t -h, --help \t\t Show help \n  \t -c,--convert \t\t Convert a list of documents belonging to a corpus into a corpus in JSON-LD format \n")
+	print("Usage: \n extractData.py <command> [parameter] \n\n General Options: \n \t -h, --help \t\t Show help \n  \t -c,--convert \t\t Convert a list of documents belonging to a corpus into a corpus in JSON-LD format \n")
 	print( "The parameter will be a arguana corpus in xmi")
 	sys.exit()
 
 #Procesamos el parametro introducido
 if (command == "-h" or command == "--help") and (len(sys.argv) == 2):
-	print("Usage: \n createJson.py <command> [parameter] \n General Options: \n -h, --help \t Show help \n -c,--convert \t Convert a list of documents belonging to a corpus into a corpus in JSON-LD format \n")
+	print("Usage: \n extractData.py <command> [parameter] \n General Options: \n -h, --help \t Show help \n -c,--convert \t Convert a list of documents belonging to a corpus into a corpus in JSON-LD format \n")
 	sys.exit()
 
 elif (command == "-c" or command == "--convert") and (len(sys.argv) == 3):
@@ -132,7 +134,6 @@ elif (command == "-c" or command == "--convert") and (len(sys.argv) == 3):
 					print(xmiPath)
 					saveReviewData(xmiPath)
 					fillTemplates(saveOpinionsData(xmiPath), noComma)
-
 
 			i+= 1
 		bottom_template = env.get_template('bottom_template.jsonld')
